@@ -3,13 +3,19 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
+import { useJsApiLoader } from '@react-google-maps/api';
+import haversine from 'haversine-distance';
 
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
+  
+  const {isLoaded} = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  })
 
   async function sendLocation(lat, lon) {
     try {
