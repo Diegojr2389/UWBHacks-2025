@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
@@ -10,6 +10,27 @@ export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
 
+  async function sendLocation(lat, lon) {
+    try {
+      // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
+      const response = await fetch('http://10.19.9.243:3000/check-location', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      });
+      const data = await response.json();
+      //console.log(data);
+  
+      if (data.alert) { // ALERT DETECTED, BUILD A NOTIFICATION TO DISPLAY THIS TO THE USER
+        alert(`⚠️ ${data.message}`);
+      } else {
+        console.log(`✅ ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Error sending location:', error);
+    }
+  }
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -19,8 +40,41 @@ export default function App() {
       }
       let loc = await Location.getCurrentPositionAsync({});
       setLocation(loc.coords);
+
+      if (loc?.coords) {
+        sendLocation(loc.coords.latitude, loc.coords.longitude)
+      }
+
+      const interval = setInterval(async () => {
+        let newLoc = await Location.getCurrentPositionAsync({});
+        setLocation(newLoc.coords);
+        if (newLoc?.coords) {
+          sendLocation(newLoc.coords.latitude, newLoc.coords.longitude);
+        }
+      }, 30000); //30 sec interval
+  
+      return () => clearInterval(interval);
     })();
   }, []);
+  console.log(location);
+
+  useEffect(() => {
+    if (location) {
+      fetch('http://10.19.202.234:3000/check-location',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          latitude: location.latitude,
+          longitude: location.longitude
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log('Server says:', data))
+        .catch(error => console.error('Error contacting server:', error));
+      }
+  }, [location]);
 
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
@@ -51,7 +105,7 @@ export default function App() {
         animationType='slide'
         onRequestClose={() => {setVisible(false)}}
       >
-        <View style={styles.overlay}>
+        <SafeAreaView style={styles.overlay}>
           <TouchableOpacity style={styles.closeButton} onPress={() => {setVisible(false)}}>
             <Text style={styles.closeBtnTxt}>CLOSE</Text>
           </TouchableOpacity>
@@ -72,7 +126,7 @@ export default function App() {
               </MapView>
             )}
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     
         {/* {location ? (

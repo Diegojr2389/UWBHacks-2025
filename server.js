@@ -20,7 +20,7 @@ const crimeCounts = new Map(); // Lookup table for number of incidents per beat
 for (const incident of crimeData) {
     const beat = incident.beat;
     if (!beat) continue;
-    crimeCounts.set(beat, (crimeCounts(beat) || 0) + 1);
+    crimeCounts.set(beat, (crimeCounts.get(beat) || 0) + 1);
   }
 
 app.post('/check-location', (req, res) => {
@@ -35,8 +35,8 @@ app.post('/check-location', (req, res) => {
     let userBeat = null; //Beat corresponding to user's location
 
     for (const feature of beatData.features) {
-        const polygon = feature.geometry;
-        if (turf.booleanPointInPolygon(userPoint, polygon)) {
+        // const polygon = feature.geometry;
+        if (turf.booleanPointInPolygon(userPoint, turf.feature(feature.geometry))) {
             userBeat = feature.properties.BEAT;
             break;
         }
