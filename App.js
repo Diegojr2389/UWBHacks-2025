@@ -21,13 +21,6 @@ export default function App() {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000')
-      .then(response => response.json())
-      .then(data => console.log('Server says:', data))
-      .catch(error => console.error('Error contacting server:', error));
-  })
-
-  useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
@@ -38,8 +31,25 @@ export default function App() {
       setLocation(loc.coords);
     })();
   }, []);
+  console.log(location);
 
-
+  useEffect(() => {
+    if (location) {
+      fetch('http://10.19.202.234:3000/check-location',{
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          latitude: location.latitude,
+          longitude: location.longitude
+        })
+      })
+        .then(response => response.json())
+        .then(data => console.log('Server says:', data))
+        .catch(error => console.error('Error contacting server:', error));
+      }
+  }, [location]);
 
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
