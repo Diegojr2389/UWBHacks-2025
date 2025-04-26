@@ -2,20 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-// import * as Notifications from 'expo-notifications';
+import Events from './components/Events';
+import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
 import MapView, { Marker } from 'react-native-maps';
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
+import { useJsApiLoader } from '@react-google-maps/api';
+import haversine from 'haversine-distance';
 import Events from './components/Events';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: false,
-//     shouldSetBadge: false,
-//   }),
-// });
 import registerNNPushToken from 'native-notify';
 
 export default function App() {
@@ -27,6 +22,10 @@ export default function App() {
   const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
   const [savedEvents, setSavedEvents] = useState([]); // store the list of events
+  
+  const {isLoaded} = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  })
 
   registerNNPushToken(29591, 'avQfdDP5FGO5lvefsZxXvd');
 
