@@ -6,13 +6,10 @@ import Events from './components/Events';
 import MapView, { Marker } from 'react-native-maps'
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
-import registerNNPushToken from 'native-notify';
 
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
-
-  registerNNPushToken(29591, 'avQfdDP5FGO5lvefsZxXvd');
 
   async function sendLocation(lat, lon) {
     try {

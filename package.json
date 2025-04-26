@@ -17,8 +17,11 @@
     "cors": "^2.8.5",
     "expo": "~52.0.46",
     "expo-app-loading": "^2.1.1",
+    "expo-constants": "~17.0.8",
+    "expo-device": "~7.0.3",
     "expo-font": "^13.0.4",
     "expo-location": "~18.0.10",
+    "expo-notifications": "~0.29.14",
     "expo-status-bar": "~2.0.1",
     "express": "^5.1.0",
     "fs": "^0.0.1-security",
@@ -32,10 +35,7 @@
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "^4.10.0",
     "react-native-web": "~0.19.13",
-    "turf": "^3.0.14",
-    "expo-device": "~7.0.3",
-    "expo-notifications": "~0.29.14",
-    "expo-constants": "~17.0.8"
+    "turf": "^3.0.14"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
