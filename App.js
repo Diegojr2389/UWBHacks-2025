@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
@@ -80,7 +80,7 @@ export default function App() {
         animationType='slide'
         onRequestClose={() => {setVisible(false)}}
       >
-        <View style={styles.overlay}>
+        <SafeAreaView style={styles.overlay}>
           <TouchableOpacity style={styles.closeButton} onPress={() => {setVisible(false)}}>
             <Text style={styles.closeBtnTxt}>CLOSE</Text>
           </TouchableOpacity>
@@ -101,7 +101,7 @@ export default function App() {
               </MapView>
             )}
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     
         {/* {location ? (
