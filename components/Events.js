@@ -14,8 +14,8 @@ const Events = ({data}) => {
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => {toggleExpanded(item.id)}}>
             <View style={(itemID === item.id) ? styles.itemPressed : styles.item}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.location}>{item.location}</Text>
+                <Text style={(itemID === item.id) ? styles.titleExpanded : styles.title}>{item.title}</Text>
+                <Text style={(itemID === item.id) ? styles.locationExpanded : styles.location}>{item.location}</Text>
                 {itemID === item.id && (<Text style={styles.description}>{item.description}</Text>)}
             </View>
         </TouchableOpacity>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     itemPressed: {
-      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
       marginBottom: 10,
       borderRadius: 20,
       padding: 15,
@@ -42,13 +42,24 @@ const styles = StyleSheet.create({
       color: '#fff',
       fontFamily: 'Poppins-SemiBold'
     },
+    titleExpanded: {
+      fontSize: 20,
+      fontWeight: 500,
+      color: '#000',
+      fontFamily: 'Poppins-SemiBold'
+    },
     location: {
       color: '#fff',
       fontFamily: 'Poppins-Regular',
       fontSize: 16
     },
+    locationExpanded: {
+      color: '#000',
+      fontFamily: 'Poppins-Regular',
+      fontSize: 16
+    },
     description: {
-      color: '#fff',
+      color: '#000',
       fontFamily: 'Poppins-Regular',
     }
 });

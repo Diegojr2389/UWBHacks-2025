@@ -31,8 +31,8 @@ export default function App() {
   return (
     <ImageBackground source={require('./assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.mapButton}>
-          <Text style={styles.text} onPress={() => setVisible(true)}>Map</Text>
+        <TouchableOpacity style={styles.mapButton} onPress={() => setVisible(true)}>
+          <Text style={styles.text}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
   
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
   },
   closeBtnTxt: {
     color: 'white',
+    fontFamily: 'Poppins-Regular'
   },
   overlay: {
     flex: 1,
