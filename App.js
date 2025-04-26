@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
 import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
-// import * as Notifications from 'expo-notifications';
 import MapView, { Marker } from 'react-native-maps';
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
@@ -12,14 +11,6 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import haversine from 'haversine-distance';
 import Events from './components/Events';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
-// Notifications.setNotificationHandler({
-//   handleNotification: async () => ({
-//     shouldShowAlert: true,
-//     shouldPlaySound: false,
-//     shouldSetBadge: false,
-//   }),
-// });
 import registerNNPushToken from 'native-notify';
 
 export default function App() {
