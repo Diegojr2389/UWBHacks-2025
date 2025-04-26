@@ -1,15 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
-import MapView, { Marker } from 'react-native-maps'
+import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker } from 'react-native-maps';
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
 
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
+  const [mapVisible, setMapVisible] = useState(false);
+  const [addEventVisible, setAddEventVisible] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventLocation, setEventLocation] = useState('');
+  const [eventDescription, setEventDescription] = useState('');
+  const [savedEvents, setSavedEvents] = useState([]); // store the list of events
 
   async function sendLocation(lat, lon) {
     try {
@@ -58,6 +65,12 @@ export default function App() {
   }, []);
   console.log(location);
 
+  const handlePlaceSelect = (data, details) => {
+    // 'data' contains the prediction, 'details' contains the full details of the place
+    console.log('Selected place:', data);
+    console.log('Place details:', details);
+  };
+
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
@@ -67,21 +80,155 @@ export default function App() {
     return null;
   }
 
-  const data = [
+  const [data, setData] = useState([
     {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
     {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
-    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."},
-  ]
+    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."}
+  ])
+
+  const handleSaveEvent = () => {
+    if (!eventTitle.trim() || !eventLocation.trim() || !eventDescription.trim()) {
+      alert('Please fill out all fields.');
+      return;
+    }
+
+    const newEvent = {
+      id: Date.now().toString(), // Unique ID (simple trick using timestamp)
+      title: eventTitle,
+      location: eventLocation, // For now treat "eventDate" as "location" if you want, or add a separate location field
+      description: eventDescription,
+    };
+  
+    setData([...data, newEvent]); // Add new event to the data list
+    setAddEventVisible(false);    // Close the modal
+  
+    // Clear form fields
+    setEventTitle('');
+    setEventLocation('');
+    setEventDescription('');
+  };
+  
 
   return (
     <ImageBackground source={require('./assets/images/background.jpg')} style={styles.backgroundImage}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.mapButton} onPress={() => setVisible(true)}>
-          <Text style={styles.text}>Map</Text>
+        <TouchableOpacity style={styles.mapButton} onPress={() => setMapVisible(true)}>
+          <Text style={styles.mapText}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
 
+        <View style={styles.container}>
+      <GooglePlacesAutocomplete
+        placeholder="Search for a place"
+        onPress={handlePlaceSelect}
+        query={{
+          key: process.env.GOOGLE_API_KEY, // Replace with your actual Google API key
+          language: 'en',
+        }}
+        onFail={(error) => console.error(error)}
+        debounce={200}
+        fetchDetails={true}
+        styles={{
+          textInputContainer: {
+            width: '100%',
+          },
+          textInput: {
+            height: 40,
+            borderColor: '#ddd',
+            borderWidth: 1,
+            paddingLeft: 10,
+            marginBottom: 10,
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+        }}
+      />
+      
+    </View>
+
         <Map visible={visible} location={location} setVisible={setVisible}/>
+        <TouchableOpacity style={styles.addButton} onPress={() => setAddEventVisible(true)}>
+          <Text style={styles.addEventText}>Add Event</Text>
+        </TouchableOpacity>
+      {/* Map popup */}
+      <Modal 
+        visible={mapVisible}
+        animationType='slide'
+        onRequestClose={() => {setMapVisible(false)}}
+      >
+        <SafeAreaView style={styles.overlay}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => {setMapVisible(false)}}>
+            <Text style={styles.closeBtnTxt}>CLOSE</Text>
+          </TouchableOpacity>
+          <View style={styles.popup}>
+            {location && (
+              <MapView
+              style={{flex: 1}}
+              region={{
+                latitude: location.latitude,
+                longitude: location.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01
+              }}
+              >
+                <Marker
+                  coordinate={{ latitude: location.latitude, longitude: location.longitude}}
+                />
+              </MapView>
+            )}
+          </View>
+        </SafeAreaView>
+      </Modal>
+      {/* Add Event Popup */}
+      <Modal 
+        visible={addEventVisible}
+        animationType='slide'
+        onRequestClose={() => setAddEventVisible(false)}
+      >
+        <SafeAreaView style={styles.overlay}>
+          <TouchableOpacity style={styles.closeButton} onPress={() => setAddEventVisible(false)}>
+            <Text style={styles.closeBtnTxt}>CLOSE</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.popup}>
+            <Text style={styles.modalTitle}>Add New Event</Text>
+            <Text style={styles.underline}/>
+
+            <TextInput
+              placeholder="Event Title"
+              placeholderTextColor="#56666F"
+              value={eventTitle}
+              onChangeText={setEventTitle}
+              style={styles.input}
+            />
+            
+            <TextInput
+              placeholder="Event Location"
+              placeholderTextColor="#56666F"
+              value={eventLocation}
+              onChangeText={setEventLocation}
+              style={styles.input}
+            />
+            
+            <TextInput
+              placeholder="Event Description"
+              placeholderTextColor="#56666F"
+              value={eventDescription}
+              onChangeText={setEventDescription}
+              style={[styles.input, { height: 80 }]}
+              multiline
+            />
+
+            <TouchableOpacity style={styles.saveButton} onPress={handleSaveEvent}>
+              <Text style={styles.saveButtonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </Modal>
+
+    
+    
   
       {/* Event list */}
       <View style={styles.flatlist}>
@@ -111,14 +258,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#314048',
     borderRadius: 15,
     borderWidth: 2,
-    borderColor: "#fbfaf5",
+    borderColor: "#56666F",
   },
-  text: {
+  addButton: {
+    flexDirection: 'row',
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    top: '6%',
+    right: 15,
+    width: 90,
+    height: 45,
+    backgroundColor: '#314048',
+    borderRadius: 15,
+    borderWidth: 2,
+    borderColor: "#56666F",
+  },
+  mapText: {
     color: 'white',
     fontSize: 14,
     fontFamily: 'Poppins-Regular',
     marginRight: 8
   }, 
+  addEventText: {
+    color: 'white',
+    fontSize: 14,
+    fontFamily: 'Poppins-Regular',
+    alignItems: 'center'
+  },
   flatlist: {
     marginTop: 100
   },
@@ -128,5 +295,64 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1
+  },
+  closeButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0e161b',
+    width: '100%'
+  },
+  closeBtnTxt: {
+    color: 'white',
+    fontFamily: 'Poppins-Regular'
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: '#162022',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  popup: {
+    width: '95%',
+    height: '92%',
+    padding: 10,
+    backgroundColor: '#162022',
+    borderRadius: 10,
+    elevation: 20
+  },
+  input: {
+    backgroundColor: '#232E30',
+    color: 'white',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 10,
+  },
+  saveButton: {
+    backgroundColor: '#56666F',
+    padding: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  modalTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginLeft: 110
+  },
+  underline: {
+    marginTop: 8,
+    marginBottom: 8,
+    height: 2,
+    width: 353,
+    backgroundColor: '#56666F',
+    borderRadius: 2
   }
 });
