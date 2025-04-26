@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
       fontFamily: 'Poppins-Regular',
     },
     click: {
-      color: '#fff',
+      color: 'gray',
       fontFamily: 'Poppins-Regular',
       fontSize: 12
     },
