@@ -35,15 +35,15 @@ app.post('/check-location', (req, res) => {
     let userBeat = null; //Beat corresponding to user's location
 
     for (const feature of beatData.features) {
-        const polygon = feature.geometry;
-        if (turf.booleanPointInPolygon(userPoint, polygon)) {
+        // const polygon = feature.geometry;
+        if (turf.booleanPointInPolygon(userPoint, turf.feature(feature.geometry))) {
             userBeat = feature.properties.BEAT;
             break;
         }
     }
 
     if (!userBeat) {
-        return res.json({ message: 'Location not in any known beat.', alert: false });
+        return res.json({ message: 'Location not in any known beat.', alert: false});
     }
 
     const incidentCount = crimeCounts.get(userBeat) || 0;
