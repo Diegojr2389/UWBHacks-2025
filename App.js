@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 // import * as Notifications from 'expo-notifications';
@@ -16,24 +16,26 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 //     shouldSetBadge: false,
 //   }),
 // });
+import registerNNPushToken from 'native-notify';
 
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
 
+  registerNNPushToken(29591, 'avQfdDP5FGO5lvefsZxXvd');
+
   async function sendLocation(lat, lon) {
     try {
       // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
-      const response = await fetch('http://10.19.9.243:3000/check-location', {
+      const response = await fetch('http://10.18.153.206:3000/check-location', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: lat, longitude: lon })
       });
       const data = await response.json();
       //console.log(data);
-  
       if (data.alert) { // ALERT DETECTED, BUILD A NOTIFICATION TO DISPLAY THIS TO THE USER
-        alert(`⚠️ ${data.message}`);
+        Alert(`⚠️ ${data.message}`);
       } else {
         console.log(`✅ ${data.message}`);
       }
