@@ -43,7 +43,7 @@ app.post('/check-location', (req, res) => {
     }
 
     if (!userBeat) {
-        return res.json({ message: 'Location not in any known beat.', alert: false });
+        return res.json({ message: 'Location not in any known beat.', alert: false});
     }
 
     const incidentCount = crimeCounts.get(userBeat) || 0;
