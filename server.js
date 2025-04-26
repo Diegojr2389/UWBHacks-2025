@@ -35,8 +35,6 @@ app.post('/check-location', (req, res) => {
     let userBeat = null; //Beat corresponding to user's location
 
     for (const feature of beatData.features) {
-        //const polygon = feature.geometry;
-        if (turf.booleanPointInPolygon(userPoint, turf.feature(feature.geometry))) {
         // const polygon = feature.geometry;
         if (turf.booleanPointInPolygon(userPoint, turf.feature(feature.geometry))) {
             userBeat = feature.properties.BEAT;
