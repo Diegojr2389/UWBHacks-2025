@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import Events from './components/Events';
 import MapView, { Marker } from 'react-native-maps'
 import { useFonts } from 'expo-font';
+import Map from './components/Map'; 
 
 export default function App() {
   const [visible, setVisible] = useState(false);
@@ -58,24 +59,6 @@ export default function App() {
   }, []);
   console.log(location);
 
-  useEffect(() => {
-    if (location) {
-      fetch('http://10.19.202.234:3000/check-location',{
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ 
-          latitude: location.latitude,
-          longitude: location.longitude
-        })
-      })
-        .then(response => response.json())
-        .then(data => console.log('Server says:', data))
-        .catch(error => console.error('Error contacting server:', error));
-      }
-  }, [location]);
-
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
@@ -98,42 +81,8 @@ export default function App() {
           <Text style={styles.text}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
-  
-      {/* Map popup */}
-      <Modal 
-        visible={visible}
-        animationType='slide'
-        onRequestClose={() => {setVisible(false)}}
-      >
-        <SafeAreaView style={styles.overlay}>
-          <TouchableOpacity style={styles.closeButton} onPress={() => {setVisible(false)}}>
-            <Text style={styles.closeBtnTxt}>CLOSE</Text>
-          </TouchableOpacity>
-          <View style={styles.popup}>
-            {location && (
-              <MapView
-              style={{flex: 1}}
-              region={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              }}
-              >
-                <Marker
-                  coordinate={{ latitude: location.latitude, longitude: location.longitude}}
-                />
-              </MapView>
-            )}
-          </View>
-        </SafeAreaView>
-      </Modal>
-    
-        {/* {location ? (
-          <Text>Lat: {location.latitude}, Lon: {location.longitude}</Text>
-        ) : (
-          <Text>Getting location...</Text>
-        )} */}
+
+        <Map visible={visible} location={location} setVisible={setVisible}/>
   
       {/* Event list */}
       <View style={styles.flatlist}>
@@ -180,30 +129,5 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1
-  },
-  closeButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0e161b',
-    width: '100%'
-  },
-  closeBtnTxt: {
-    color: 'white',
-    fontFamily: 'Poppins-Regular'
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: '#56666f',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  popup: {
-    width: '95%',
-    height: '92%',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 20
   }
 });

@@ -1,23 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
-import { useEffect, useState } from 'react';
-import * as Location from 'expo-location';
 import MapView, { Marker, Heatmap } from 'react-native-maps'
 
-const Map = ({visible}) => {
-    const [location, setLocation] = useState(null);
-
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-            console.log("Permission denied!");
-            return;
-            }
-            let loc = await Location.getCurrentPositionAsync({});
-            setLocation(loc.coords);
-        })();
-    }, []);
-
+const Map = ({visible, location, setVisible}) => {
     const heatmapPoints = [
         { latitude: 47.7615, longitude: -122.2050, weight: 1 },
         { latitude: 47.7580, longitude: -122.2105, weight: 0.8 },
@@ -30,7 +14,7 @@ const Map = ({visible}) => {
         { latitude: 47.7710, longitude: -122.1970, weight: 0.6 },
     ];
 
-    return (
+    return (    
         <Modal 
             visible={visible}
             animationType='slide'
@@ -98,4 +82,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         elevation: 20
     }
-})
+});
+
+export default Map;
