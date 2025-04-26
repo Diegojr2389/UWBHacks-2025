@@ -1,13 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
 import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
+// import * as Notifications from 'expo-notifications';
+import MapView, { Marker } from 'react-native-maps';
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
 import { useJsApiLoader } from '@react-google-maps/api';
 import haversine from 'haversine-distance';
+import Events from './components/Events';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+
+// Notifications.setNotificationHandler({
+//   handleNotification: async () => ({
+//     shouldShowAlert: true,
+//     shouldPlaySound: false,
+//     shouldSetBadge: false,
+//   }),
+// });
+import registerNNPushToken from 'native-notify';
 
 export default function App() {
   const [visible, setVisible] = useState(false);
@@ -17,19 +30,20 @@ export default function App() {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   })
 
+  registerNNPushToken(29591, 'avQfdDP5FGO5lvefsZxXvd');
+
   async function sendLocation(lat, lon) {
     try {
       // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
-      const response = await fetch('http://10.19.9.243:3000/check-location', {
+      const response = await fetch('http://10.18.153.206:3000/check-location', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: lat, longitude: lon })
       });
       const data = await response.json();
       //console.log(data);
-  
       if (data.alert) { // ALERT DETECTED, BUILD A NOTIFICATION TO DISPLAY THIS TO THE USER
-        alert(`⚠️ ${data.message}`);
+        Alert(`⚠️ ${data.message}`);
       } else {
         console.log(`✅ ${data.message}`);
       }
@@ -65,6 +79,12 @@ export default function App() {
   }, []);
   console.log(location);
 
+  const handlePlaceSelect = (data, details) => {
+    // 'data' contains the prediction, 'details' contains the full details of the place
+    console.log('Selected place:', data);
+    console.log('Place details:', details);
+  };
+
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
     'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
@@ -87,6 +107,38 @@ export default function App() {
           <Text style={styles.text}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
+
+        <View style={styles.container}>
+      <GooglePlacesAutocomplete
+        placeholder="Search for a place"
+        onPress={handlePlaceSelect}
+        query={{
+          key: process.env.GOOGLE_API_KEY, // Replace with your actual Google API key
+          language: 'en',
+        }}
+        onFail={(error) => console.error(error)}
+        debounce={200}
+        fetchDetails={true}
+        styles={{
+          textInputContainer: {
+            width: '100%',
+          },
+          textInput: {
+            height: 40,
+            borderColor: '#ddd',
+            borderWidth: 1,
+            paddingLeft: 10,
+            marginBottom: 10,
+          },
+          predefinedPlacesDescription: {
+            color: '#1faadb',
+          },
+        }}
+      />
+      <Text style={styles.infoText}>
+        Select a place from the autocomplete list.
+      </Text>
+    </View>
 
         <Map visible={visible} location={location} setVisible={setVisible}/>
   
