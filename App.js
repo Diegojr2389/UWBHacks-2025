@@ -3,16 +3,12 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
-import { useFonts } from 'expo-font';
 import MapView, { Marker } from 'react-native-maps'
+import { useFonts } from 'expo-font';
 
 export default function App() {
-  const [location, setLocation] = useState();
-  const data = [
-    {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
-    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
-    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."},
-  ]
+  const [visible, setVisible] = useState(false);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -26,7 +22,20 @@ export default function App() {
     })();
   }, []);
 
-  const [visible, setVisible] = useState(false);
+  let [fontsLoaded] = useFonts({
+    'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
+    'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
+  });
+  
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  const data = [
+    {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
+    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
+    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."},
+  ]
 
   return (
     <ImageBackground source={require('./assets/images/background.jpg')} style={styles.backgroundImage}>

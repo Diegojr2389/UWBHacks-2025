@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 const Events = ({data}) => {
-  const [itemID, setItemID] = useState();
+  const [itemID, setItemID] = useState(null);
 
   const toggleExpanded = (id) => {
     setItemID((prevID) => (prevID === id ? null : id));
@@ -16,6 +16,7 @@ const Events = ({data}) => {
             <View style={(itemID === item.id) ? styles.itemPressed : styles.item}>
                 <Text style={(itemID === item.id) ? styles.titleExpanded : styles.title}>{item.title}</Text>
                 <Text style={(itemID === item.id) ? styles.locationExpanded : styles.location}>{item.location}</Text>
+                {itemID !== item.id && (<Text style={styles.click}>Click for more info</Text>)}
                 {itemID === item.id && (<Text style={styles.description}>{item.description}</Text>)}
             </View>
         </TouchableOpacity>
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     itemPressed: {
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: 'rgba(255, 255, 255, 0.7)',
       marginBottom: 10,
       borderRadius: 20,
       padding: 15,
@@ -51,17 +52,27 @@ const styles = StyleSheet.create({
     location: {
       color: '#fff',
       fontFamily: 'Poppins-Regular',
-      fontSize: 16
+      fontSize: 17
     },
     locationExpanded: {
       color: '#000',
       fontFamily: 'Poppins-Regular',
-      fontSize: 16
+      fontSize: 17
     },
     description: {
       color: '#000',
       fontFamily: 'Poppins-Regular',
-    }
+    },
+    click: {
+      color: '#fff',
+      fontFamily: 'Poppins-Regular',
+      fontSize: 12
+    },
+    // clickExpanded: {
+    //   color: '#000',
+    //   fontFamily: 'Poppins-Regular',
+    //   fontSize: 12
+    // }
 });
 
 export default Events;
