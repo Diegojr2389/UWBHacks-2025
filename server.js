@@ -20,7 +20,7 @@ const crimeCounts = new Map(); // Lookup table for number of incidents per beat
 for (const incident of crimeData) {
     const beat = incident.beat;
     if (!beat) continue;
-    crimeCounts.set(beat, (crimeCounts(beat) || 0) + 1);
+    crimeCounts.set(beat, (crimeCounts.get(beat) || 0) + 1);
   }
 
 app.post('/check-location', (req, res) => {

@@ -6,9 +6,26 @@ import Events from './components/Events';
 import MapView, { Marker } from 'react-native-maps'
 import { useFonts } from 'expo-font';
 
+// const express = require('express');
+// const cors = require('cors');
+// const fs = require('fs');
+
+// const app = express();
+// const PORT = 3000;
+// app.use(cors());
+// app.use(express.json());
+
+
 export default function App() {
   const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:3000')
+      .then(response => response.json())
+      .then(data => console.log('Server says:', data))
+      .catch(error => console.error('Error contacting server:', error));
+  })
 
   useEffect(() => {
     (async () => {
@@ -21,6 +38,8 @@ export default function App() {
       setLocation(loc.coords);
     })();
   }, []);
+
+
 
   let [fontsLoaded] = useFonts({
     'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
