@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 const Events = ({data}) => {
-  const [expanded, setExpanded] = useState(false);
   const [itemID, setItemID] = useState();
 
   const toggleExpanded = (id) => {
@@ -14,10 +13,10 @@ const Events = ({data}) => {
         data={data}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => {toggleExpanded(item.id)}}>
-            <View style={styles.item}>
+            <View style={(itemID === item.id) ? styles.itemPressed : styles.item}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Text>{item.location}</Text>
-                {itemID === item.id && (<Text>{item.description}</Text>)}
+                <Text style={styles.location}>{item.location}</Text>
+                {itemID === item.id && (<Text style={styles.description}>{item.description}</Text>)}
             </View>
         </TouchableOpacity>
         )}>
@@ -26,14 +25,31 @@ const Events = ({data}) => {
 };
 const styles = StyleSheet.create({
     item: {
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(49, 64, 72, 0.5)',
         marginBottom: 10,
         borderRadius: 20,
         padding: 15,
     },
+    itemPressed: {
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+      marginBottom: 10,
+      borderRadius: 20,
+      padding: 15,
+    },
     title: {
       fontSize: 20,
-      fontWeight: 500
+      fontWeight: 500,
+      color: '#fff',
+      fontFamily: 'Poppins-SemiBold'
+    },
+    location: {
+      color: '#fff',
+      fontFamily: 'Poppins-Regular',
+      fontSize: 16
+    },
+    description: {
+      color: '#fff',
+      fontFamily: 'Poppins-Regular',
     }
 });
 
