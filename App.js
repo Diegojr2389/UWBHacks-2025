@@ -25,22 +25,22 @@ export default function App() {
   }, []);
 
   async function sendLocation(lat, lon) {
-    try {
-      // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
-      const response = await fetch('http://10.0.0.102:3000/check-location', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lon })
-      });
-      const data = await response.json();
-      //console.log(data);
-      if (data.alert) { // ALERT DETECTED, BUILD A NOTIFICATION TO DISPLAY THIS TO THE USER
-        Alert.alert('Warning', `⚠️ ${data.message}`);
-      } else {
-        console.log(`✅ ${data.message}`);
+    if (lat && lon) {  // Check if latitude and longitude are valid
+      try {
+        const response = await fetch('http://10.0.0.128:3000/check-location', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ latitude: lat, longitude: lon })
+        });
+        const data = await response.json();
+        if (data.alert) {
+          Alert.alert('Warning', `⚠️ ${data.message}`);
+        } else {
+          console.log(`✅ ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Error sending location:', error);
       }
-    } catch (error) {
-      console.error('Error sending location:', error);
     }
   }
 
