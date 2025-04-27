@@ -64,8 +64,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         if (!parseCoordinates()) return;
         
         try {
-            // Using Google Directions API to get route
-            const apiKey = 'AIzaSyC96OfrkwvwohzN0NcBqk6p6-dUSUxohDE'; // Replace with your actual API key
+            const apiKey = 'AIzaSyC96OfrkwvwohzN0NcBqk6p6-dUSUxohDE';
             const response = await fetch(
                 `https://maps.googleapis.com/maps/api/directions/json?origin=${startCoords.latitude},${startCoords.longitude}&destination=${destCoords.latitude},${destCoords.longitude}&key=${apiKey}`
             );
@@ -77,7 +76,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                 return;
             }
             
-            // Decode the polyline
+            // Decode polyline
             const points = result.routes[0].overview_polyline.points;
             const decodedCoords = decodePolyline(points);
             
@@ -88,7 +87,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         }
     };
 
-    // Function to decode Google's polyline format
+    // Decoding Google's polyline format
     const decodePolyline = (encoded) => {
         const poly = [];
         let index = 0, len = encoded.length;
@@ -136,10 +135,8 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         setDestLng('');
     };
 
-    // Calculate the region to show both markers and route
     const getMapRegion = () => {
         if (!startCoords) return null;
-        
         if (!destCoords) {
             return {
                 latitude: startCoords.latitude,
@@ -152,7 +149,6 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         // Calculate center point and deltas to include both points
         const midLat = (startCoords.latitude + destCoords.latitude) / 2;
         const midLng = (startCoords.longitude + destCoords.longitude) / 2;
-        
         const latDelta = Math.abs(startCoords.latitude - destCoords.latitude) * 1.5;
         const lngDelta = Math.abs(startCoords.longitude - destCoords.longitude) * 1.5;
         
