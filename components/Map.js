@@ -1,6 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, TextInput, Alert } from 'react-native';
 import MapView, { Marker, Heatmap, Polyline } from 'react-native-maps';
 import { useState, useEffect } from 'react';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Constants from 'expo-constants'
+import 'react-native-get-random-values'
 
 const Map = ({ mapVisible, location, setMapVisible }) => {
     const [startCoords, setStartCoords] = useState(null);
@@ -247,7 +250,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                         <View style={styles.inputGroup}>
                             <Text style={styles.inputLabel}>Destination:</Text>
                             <View style={styles.coordInputs}>
-                                <TextInput
+                                {/* <TextInput
                                     style={styles.input}
                                     placeholder="Latitude"
                                     value={destLat}
@@ -260,7 +263,38 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                                     value={destLng}
                                     onChangeText={setDestLng}
                                     keyboardType="numeric"
-                                />
+                                /> */}
+                                <GooglePlacesAutocomplete
+                                    placeholder="Enter location"
+                                    listViewDisplayed='auto'
+                                    onPress= {(data, details=null) => {
+                                        setDestLat(details.geometry.location.lat);
+                                        setDestLng(details.geometry.location.lng);
+                                    }}
+                                    query={{
+                                        key: Constants.expoConfig.extra.REACT_APP_GOOGLE_MAPS_API_KEY,
+                                        language: 'en',
+                                    }}
+                                    // value={eventLocation}
+                                    styles={{
+                                        container: {
+                                            flex: 0,
+                                            position: 'relative',
+                                            zIndex: 10,
+                                            width: '100%'
+                                        },
+                                        textInput: {
+                                            backgroundColor: '#fff',
+                                            color: '#000',
+                                            padding: 10,
+                                            marginVertical: 5,
+                                            borderRadius: 10
+                                        }
+                                    }}
+                                    fetchDetails={true} // Needed to get coordinates
+                                    debounce={500}     // Wait 500ms after typing stops before searching
+                                    onFail={(error) => console.error(error)}
+                                />  
                             </View>
                         </View>
                         
