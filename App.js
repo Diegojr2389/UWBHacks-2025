@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput, Vibration } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
@@ -7,14 +7,24 @@ import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-nativ
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
 import AddEvent from './components/AddEvent';
+import RerouteMap from './components/RerouteMap';
 
 export default function App() {
   const [location, setLocation] = useState(null);
+  const [rerouteVisible, setRerouteVisible] = useState(false);
   const [mapVisible, setMapVisible] = useState(false);
   const [addEventVisible, setAddEventVisible] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
+
+  useEffect(() => {
+    Vibration.vibrate([1200, 1500], true);
+    Alert.alert('⚠️ You are approaching a dangerous area!', 
+                'Would you like to reroute?', 
+                [{text: 'YES', onPress: () => {Vibration.cancel(); setRerouteVisible(true)}}, 
+                {text: 'NO', onPress: () => Vibration.cancel()}]);
+  }, []);
 
   async function sendLocation(lat, lon) {
     try {
@@ -104,6 +114,8 @@ export default function App() {
           <Text style={styles.mapText}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
+
+        <RerouteMap rerouteVisible={rerouteVisible} setRerouteVisible={setRerouteVisible}></RerouteMap>
 
         <Map mapVisible={mapVisible} location={location} setMapVisible={setMapVisible}/>
 
