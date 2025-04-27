@@ -25,9 +25,9 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
     }, [location]);
 
     const heatmapPoints = [
-        { latitude: 47.7606, longitude: -122.1917, weight: 5 }, // Main UW Bothell
-        { latitude: 47.7610, longitude: -122.1905, weight: 5 },
-        { latitude: 47.7615, longitude: -122.1920, weight: 4 },
+        { latitude: 47.7630, longitude: -122.1917, weight: 5 }, // Main UW Bothell
+        { latitude: 47.7610, longitude: -122.1890, weight: 5 },
+        { latitude: 47.7600, longitude: -122.1920, weight: 4 },
         { latitude: 47.7620, longitude: -122.1900, weight: 3 },
         { latitude: 47.7590, longitude: -122.1905, weight: 2 },
         { latitude: 47.7585, longitude: -122.1910, weight: 1 },
