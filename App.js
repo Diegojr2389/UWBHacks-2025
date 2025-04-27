@@ -4,19 +4,16 @@ import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
 import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
-import MapView, { Marker } from 'react-native-maps';
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
 
 export default function App() {
-  const [visible, setVisible] = useState(false);
   const [location, setLocation] = useState(null);
   const [mapVisible, setMapVisible] = useState(false);
   const [addEventVisible, setAddEventVisible] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
-  const [savedEvents, setSavedEvents] = useState([]); // store the list of events
 
   async function sendLocation(lat, lon) {
     try {
@@ -71,14 +68,14 @@ export default function App() {
     console.log('Place details:', details);
   };
 
-  let [fontsLoaded] = useFonts({
-    'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
-    'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
-  });
+  // let [fontsLoaded] = useFonts({
+  //   'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
+  //   'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
+  // });
   
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   const [data, setData] = useState([
     {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
@@ -117,69 +114,12 @@ export default function App() {
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
 
-        <View style={styles.container}>
-      <GooglePlacesAutocomplete
-        placeholder="Search for a place"
-        onPress={handlePlaceSelect}
-        query={{
-          key: process.env.GOOGLE_API_KEY, // Replace with your actual Google API key
-          language: 'en',
-        }}
-        onFail={(error) => console.error(error)}
-        debounce={200}
-        fetchDetails={true}
-        styles={{
-          textInputContainer: {
-            width: '100%',
-          },
-          textInput: {
-            height: 40,
-            borderColor: '#ddd',
-            borderWidth: 1,
-            paddingLeft: 10,
-            marginBottom: 10,
-          },
-          predefinedPlacesDescription: {
-            color: '#1faadb',
-          },
-        }}
-      />
-      
-    </View>
+        <Map mapVisible={mapVisible} location={location} setMapVisible={setMapVisible}/>
 
-        <Map visible={visible} location={location} setVisible={setVisible}/>
         <TouchableOpacity style={styles.addButton} onPress={() => setAddEventVisible(true)}>
           <Text style={styles.addEventText}>Add Event</Text>
         </TouchableOpacity>
-      {/* Map popup */}
-      <Modal 
-        visible={mapVisible}
-        animationType='slide'
-        onRequestClose={() => {setMapVisible(false)}}
-      >
-        <SafeAreaView style={styles.overlay}>
-          <TouchableOpacity style={styles.closeButton} onPress={() => {setMapVisible(false)}}>
-            <Text style={styles.closeBtnTxt}>CLOSE</Text>
-          </TouchableOpacity>
-          <View style={styles.popup}>
-            {location && (
-              <MapView
-              style={{flex: 1}}
-              region={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01
-              }}
-              >
-                <Marker
-                  coordinate={{ latitude: location.latitude, longitude: location.longitude}}
-                />
-              </MapView>
-            )}
-          </View>
-        </SafeAreaView>
-      </Modal>
+    
       {/* Add Event Popup */}
       <Modal 
         visible={addEventVisible}

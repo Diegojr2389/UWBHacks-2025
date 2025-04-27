@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, SafeAreaView } from 'react-native';
 import MapView, { Marker, Heatmap } from 'react-native-maps'
 
-const Map = ({visible, location, setVisible}) => {
+const Map = ({mapVisible, location, setMapVisible}) => {
     const heatmapPoints = [
         { latitude: 47.7615, longitude: -122.2050, weight: 1 },
         { latitude: 47.7580, longitude: -122.2105, weight: 0.8 },
@@ -16,12 +16,12 @@ const Map = ({visible, location, setVisible}) => {
 
     return (    
         <Modal 
-            visible={visible}
+            visible={mapVisible}
             animationType='slide'
-            onRequestClose={() => {setVisible(false)}}
+            onRequestClose={() => {setMapVisible(false)}}
         >
-            <View style={styles.overlay}>
-                <TouchableOpacity style={styles.closeButton} onPress={() => {setVisible(false)}}>
+            <SafeAreaView style={styles.overlay}>
+                <TouchableOpacity style={styles.closeButton} onPress={() => {setMapVisible(false)}}>
                 <Text style={styles.closeBtnTxt}>CLOSE</Text>
                 </TouchableOpacity>
                 <View style={styles.popup}>
@@ -51,7 +51,7 @@ const Map = ({visible, location, setVisible}) => {
                     </MapView>
                 )}
                 </View>
-            </View>
+            </SafeAreaView>
         </Modal>
     )
 };
