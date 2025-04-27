@@ -66,7 +66,6 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
 
     const getDirections = async () => {
         if (!parseCoordinates()) return;
-        
         try {
             // Using Google Directions API to get route
             const apiKey = 'AIzaSyC96OfrkwvwohzN0NcBqk6p6-dUSUxohDE';
@@ -270,6 +269,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                                     onPress= {(data, details=null) => {
                                         setDestLat(details.geometry.location.lat);
                                         setDestLng(details.geometry.location.lng);
+                                        setDestCoords({latitude: parseFloat(details.geometry.location.lat), longitude: parseFloat(details.geometry.location.lng)});
                                     }}
                                     query={{
                                         key: Constants.expoConfig.extra.REACT_APP_GOOGLE_MAPS_API_KEY,
