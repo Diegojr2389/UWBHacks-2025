@@ -27,7 +27,8 @@ export default function App() {
   async function sendLocation(lat, lon) {
     if (lat && lon) {  // Check if latitude and longitude are valid
       try {
-        const response = await fetch('http://10.0.0.102:3000/check-location', {
+        // Enter in your server's IPv4 address to run, then start expo
+        const response = await fetch('http://SERVER_IPV4_ADDR:3000/check-location', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ latitude: lat, longitude: lon })
