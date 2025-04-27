@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, Modal, SafeAreaView, Alert, TextInput, Vibration } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
 import Events from './components/Events';
@@ -7,14 +7,24 @@ import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-nativ
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
 import AddEvent from './components/AddEvent';
+import RerouteMap from './components/RerouteMap';
 
 export default function App() {
   const [location, setLocation] = useState(null);
+  const [rerouteVisible, setRerouteVisible] = useState(false);
   const [mapVisible, setMapVisible] = useState(false);
   const [addEventVisible, setAddEventVisible] = useState(false);
   const [eventTitle, setEventTitle] = useState('');
   const [eventLocation, setEventLocation] = useState('');
   const [eventDescription, setEventDescription] = useState('');
+
+  useEffect(() => {
+    Vibration.vibrate([1200, 1500], true);
+    Alert.alert('⚠️ You are approaching a dangerous area!', 
+                'Would you like to reroute?', 
+                [{text: 'YES', onPress: () => {Vibration.cancel(); setRerouteVisible(true)}}, 
+                {text: 'NO', onPress: () => Vibration.cancel()}]);
+  }, []);
 
   async function sendLocation(lat, lon) {
     try {
@@ -69,9 +79,9 @@ export default function App() {
   };
 
   const [data, setData] = useState([
-    {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
-    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
-    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."}
+    {id: '1', title: 'Shooting', location: "Capitol Hill, Seattle", description: "Shooting ocurred in northern Capitol Hill. 2 Dead.", date: new Date("2025-04-21T18:06:00")},
+    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago.", date: new Date("2025-04-23T20:02:00")},
+    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported.", date: new Date("2025-04-26T01:23:25")}
   ])
 
   const handleSaveEvent = () => {
@@ -85,6 +95,7 @@ export default function App() {
       title: eventTitle,
       location: eventLocation, // For now treat "eventDate" as "location" if you want, or add a separate location field
       description: eventDescription,
+      date: new Date()
     };
   
     setData([...data, newEvent]); // Add new event to the data list
@@ -104,6 +115,8 @@ export default function App() {
           <Text style={styles.mapText}>Map</Text>
           <Image source={require('./assets/images/map.png')} style={styles.map}></Image>
         </TouchableOpacity>
+
+        <RerouteMap rerouteVisible={rerouteVisible} setRerouteVisible={setRerouteVisible}></RerouteMap>
 
         <Map mapVisible={mapVisible} location={location} setMapVisible={setMapVisible}/>
 

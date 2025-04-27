@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Date from './Date';
 
 const Events = ({data}) => {
   const [itemID, setItemID] = useState(null);
@@ -7,17 +8,20 @@ const Events = ({data}) => {
   const toggleExpanded = (id) => {
     setItemID((prevID) => (prevID === id ? null : id));
   };
-
+  
   return (
     <FlatList
         data={data}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => {toggleExpanded(item.id)}}>
             <View style={(itemID === item.id) ? styles.itemPressed : styles.item}>
-                <Text style={(itemID === item.id) ? styles.titleExpanded : styles.title}>{item.title}</Text>
-                <Text style={(itemID === item.id) ? styles.locationExpanded : styles.location}>{item.location}</Text>
-                {itemID !== item.id && (<Text style={styles.click}>Click for more info</Text>)}
-                {itemID === item.id && (<Text style={styles.description}>{item.description}</Text>)}
+              <View style={styles.dateContainer}>
+                <Date date={item.date}/>
+              </View>
+              <Text style={(itemID === item.id) ? styles.titleExpanded : styles.title}>{item.title}</Text>
+              <Text style={(itemID === item.id) ? styles.locationExpanded : styles.location}>{item.location}</Text>
+              {itemID !== item.id && (<Text style={styles.click}>Click for more info</Text>)}
+              {itemID === item.id && (<Text style={styles.description}>{item.description}</Text>)}
             </View>
         </TouchableOpacity>
         )}>
@@ -61,6 +65,11 @@ const styles = StyleSheet.create({
     click: {
       color: 'gray',
       fontSize: 12
+    },
+    dateContainer: {
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'flex-end'
     }
 });
 
