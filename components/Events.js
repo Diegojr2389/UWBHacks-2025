@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import Date from './Date';
+import FormattedDate from './Date';
 
 const Events = ({data}) => {
   const [itemID, setItemID] = useState(null);
@@ -16,7 +16,7 @@ const Events = ({data}) => {
           <TouchableOpacity onPress={() => {toggleExpanded(item.id)}}>
             <View style={(itemID === item.id) ? styles.itemPressed : styles.item}>
               <View style={styles.dateContainer}>
-                <Date date={item.date}/>
+                <FormattedDate date={item.date}/>
               </View>
               <Text style={(itemID === item.id) ? styles.titleExpanded : styles.title}>{item.title}</Text>
               <Text style={(itemID === item.id) ? styles.locationExpanded : styles.location}>{item.location}</Text>
