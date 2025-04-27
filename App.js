@@ -60,7 +60,6 @@ export default function App() {
       return () => clearInterval(interval);
     })();
   }, []);
-  console.log(location);
 
   const handlePlaceSelect = (data, details) => {
     // 'data' contains the prediction, 'details' contains the full details of the place
