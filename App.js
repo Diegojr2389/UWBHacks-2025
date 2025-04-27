@@ -25,22 +25,22 @@ export default function App() {
   }, []);
 
   async function sendLocation(lat, lon) {
-    try {
-      // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
-      const response = await fetch('http://10.0.0.99:3000/check-location', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lon })
-      });
-      const data = await response.json();
-      //console.log(data);
-      if (data.alert) { // ALERT DETECTED, BUILD A NOTIFICATION TO DISPLAY THIS TO THE USER
-        Alert.alert('Warning', `⚠️ ${data.message}`);
-      } else {
-        console.log(`✅ ${data.message}`);
+    if (lat && lon) {  // Check if latitude and longitude are valid
+      try {
+        const response = await fetch('http://10.0.0.128:3000/check-location', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ latitude: lat, longitude: lon })
+        });
+        const data = await response.json();
+        if (data.alert) {
+          Alert.alert('Warning', `⚠️ ${data.message}`);
+        } else {
+          console.log(`✅ ${data.message}`);
+        }
+      } catch (error) {
+        console.error('Error sending location:', error);
       }
-    } catch (error) {
-      console.error('Error sending location:', error);
     }
   }
 
@@ -77,9 +77,9 @@ export default function App() {
   };
 
   const [data, setData] = useState([
-    {id: '1', title: 'Shooting', location: "Capitol Hill, Seattle", description: "Shooting ocurred in northern Capitol Hill. 2 Dead.", date: new Date("2025-04-21T18:06:00")},
+    {id: '1', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported.", date: new Date("2025-04-26T01:23:25")},
     {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago.", date: new Date("2025-04-23T20:02:00")},
-    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported.", date: new Date("2025-04-26T01:23:25")}
+    {id: '3', title: 'Shooting', location: "Capitol Hill, Seattle", description: "Shooting ocurred in northern Capitol Hill. 2 Dead.", date: new Date("2025-04-21T18:06:00")}
   ])
 
   const handleSaveEvent = () => {
@@ -96,7 +96,9 @@ export default function App() {
       date: new Date()
     };
   
-    setData([...data, newEvent]); // Add new event to the data list
+    const updatedData = [...data, newEvent]; // Add new event to the data list
+    const sortedData = updatedData.sort((a, b) => b.date - a.date);
+    setData(sortedData);
     setAddEventVisible(false);    // Close the modal
   
     // Clear form fields
