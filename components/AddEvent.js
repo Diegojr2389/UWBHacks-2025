@@ -1,5 +1,8 @@
 import { StyleSheet, Text, View, TouchableOpacity, Modal, SafeAreaView } from 'react-native';
 import { TextInput } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import Constants from 'expo-constants'
+import 'react-native-get-random-values'
 
 const AddEvent = ({addEventVisible, setAddEventVisible, eventTitle, setEventTitle, eventLocation, setEventLocation, eventDescription, setEventDescription, onSaveEvent}) => {
     return (
@@ -10,41 +13,63 @@ const AddEvent = ({addEventVisible, setAddEventVisible, eventTitle, setEventTitl
         >
             <SafeAreaView style={styles.overlay}>
                 <TouchableOpacity style={styles.closeButton} onPress={() => setAddEventVisible(false)}>
-                <Text style={styles.closeBtnTxt}>CLOSE</Text>
+                    <Text style={styles.closeBtnTxt}>CLOSE</Text>
                 </TouchableOpacity>
             
                 <View style={styles.popup}>
-                <Text style={styles.modalTitle}>Add New Event</Text>
-                <Text style={styles.underline}/>
+                    <Text style={styles.modalTitle}>Add New Event</Text>
+                    <Text style={styles.underline}/>
 
-                <TextInput
-                    placeholder="Event Title"
-                    placeholderTextColor="#56666F"
-                    value={eventTitle}
-                    onChangeText={setEventTitle}
-                    style={styles.input}
-                />
-                    
-                <TextInput
-                    placeholder="Event Location"
-                    placeholderTextColor="#56666F"
-                    value={eventLocation}
-                    onChangeText={setEventLocation}
-                    style={styles.input}
-                />
-                    
-                <TextInput
-                    placeholder="Event Description"
-                    placeholderTextColor="#56666F"
-                    value={eventDescription}
-                    onChangeText={setEventDescription}
-                    style={[styles.input, { height: 80 }]}
-                    multiline
-                />
+                    <TextInput
+                        placeholder="Event Title"
+                        placeholderTextColor="#56666F"
+                        value={eventTitle}
+                        onChangeText={setEventTitle}
+                        style={styles.input}
+                    />
 
-                <TouchableOpacity style={styles.saveButton} onPress={onSaveEvent}>
-                    <Text style={styles.saveButtonText}>Submit</Text>
-                </TouchableOpacity>
+                    <View>
+                        <GooglePlacesAutocomplete
+                            placeholder="Enter location"
+                            listViewDisplayed='auto'
+                            onPress= {(data, details=null) => {setEventLocation(data.description)}}
+                            query={{
+                                key: Constants.expoConfig.extra.REACT_APP_GOOGLE_MAPS_API_KEY,
+                                language: 'en',
+                            }}
+                            value={eventLocation}
+                            styles={{
+                                container: {
+                                    flex: 0,
+                                    position: 'relative',
+                                    zIndex: 10
+                                },
+                                textInput: {
+                                    backgroundColor: '#232E30',
+                                    color: 'white',
+                                    padding: 10,
+                                    marginVertical: 5,
+                                    borderRadius: 10
+                                }
+                            }}
+                            fetchDetails={true} // Needed to get coordinates
+                            debounce={500}     // Wait 500ms after typing stops before searching
+                            onFail={(error) => console.error(error)}
+                        />  
+                    </View>
+                        
+                    <TextInput
+                        placeholder="Event Description"
+                        placeholderTextColor="#56666F"
+                        value={eventDescription}
+                        onChangeText={setEventDescription}
+                        style={[styles.input, { height: 80 }]}
+                        multiline
+                    />
+
+                    <TouchableOpacity style={styles.saveButton} onPress={onSaveEvent}>
+                        <Text style={styles.saveButtonText}>Submit</Text>
+                    </TouchableOpacity>
                 </View>
             </SafeAreaView>
         </Modal>

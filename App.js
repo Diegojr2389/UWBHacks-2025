@@ -27,7 +27,7 @@ export default function App() {
   async function sendLocation(lat, lon) {
     try {
       // THIS IS IPV4 ADDRESS, WILL CHANGE BASED LOCATION
-      const response = await fetch('http://10.0.0.128:3000/check-location', {
+      const response = await fetch('http://10.0.0.99:3000/check-location', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ latitude: lat, longitude: lon })

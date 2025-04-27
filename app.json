@@ -27,7 +27,8 @@
     "extra": {
       "eas": {
         "projectId": "de14bae1-a6d8-46d0-b8ec-ae13de8efc75"
-      }
+      },
+      "REACT_APP_GOOGLE_MAPS_API_KEY": "AIzaSyC96OfrkwvwohzN0NcBqk6p6-dUSUxohDE"
     }
   }
 }

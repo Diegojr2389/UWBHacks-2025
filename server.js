@@ -21,7 +21,7 @@ for (const incident of crimeData) {
     const beat = incident.beat;
     if (!beat) continue;
     crimeCounts.set(beat, (crimeCounts.get(beat) || 0) + 1);
-  }
+}
 
 app.post('/check-location', (req, res) => {
     const { latitude, longitude } = req.body;

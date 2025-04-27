@@ -5,3 +5,4 @@ npm install dotenv
 @react-google-maps/api
 npm install native-notify
 npx expo install expo-device expo-notifications expo-constants
+npm install dotenv
