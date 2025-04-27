@@ -69,9 +69,9 @@ export default function App() {
   };
 
   const [data, setData] = useState([
-    {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
-    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
-    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported."}
+    {id: '1', title: 'Shooting', location: "Capitol Hill, Seattle", description: "Shooting ocurred in northern Capitol Hill. 2 Dead.", date: new Date("2025-04-21T18:06:00")},
+    {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago.", date: new Date("2025-04-23T20:02:00")},
+    {id: '3', title: 'Gunshots', location: "Fremont, Seattle", description: "Gunshots were reported by residents this week. No casualties reported.", date: new Date("2025-04-26T01:23:25")}
   ])
 
   const handleSaveEvent = () => {
@@ -85,6 +85,7 @@ export default function App() {
       title: eventTitle,
       location: eventLocation, // For now treat "eventDate" as "location" if you want, or add a separate location field
       description: eventDescription,
+      date: new Date()
     };
   
     setData([...data, newEvent]); // Add new event to the data list

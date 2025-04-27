@@ -3,3 +3,5 @@ npm install react-native-google-places-autocomplete
 expo install react-native-gesture-handler react-native-reanimated
 npm install dotenv
 @react-google-maps/api
+npm install native-notify
+npx expo install expo-device expo-notifications expo-constants
