@@ -6,7 +6,7 @@ import Events from './components/Events';
 import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
-import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api';
+import { useJsApiLoader, GoogleMap, Marker, Autocomplete, DirectionsRenderer } from '@react-google-maps/api';
 import haversine from 'haversine-distance';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { useRef, useState } from 'react';
@@ -56,8 +56,18 @@ export default function App() {
         destination: destinationRef.current.value,
         travelMode: google.maps.TravelMode.WALKING,
         provideRouteAlternatives: true
-      });
+      })
+      setDirectionsReponse(results)
+      setDistance(results.routes[0].legs[0].distance.text)
+      setDuration(results.routes[0].legs[0].duration.text)
+    }
 
+    function clearRoute() {
+        setDirectionsReponse(null)
+        setDistance('')
+        setDuration('')
+        originRef.current.value = ''
+        destinationRef.current.value = ''
     }
 
     //async function sendLocation(lat, lon)
