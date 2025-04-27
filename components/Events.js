@@ -41,38 +41,27 @@ const styles = StyleSheet.create({
       fontSize: 20,
       fontWeight: 500,
       color: '#fff',
-      fontFamily: 'Poppins-SemiBold'
     },
     titleExpanded: {
       fontSize: 20,
       fontWeight: 500,
       color: '#000',
-      fontFamily: 'Poppins-SemiBold'
     },
     location: {
       color: '#fff',
-      fontFamily: 'Poppins-Regular',
       fontSize: 17
     },
     locationExpanded: {
       color: '#000',
-      fontFamily: 'Poppins-Regular',
       fontSize: 17
     },
     description: {
       color: '#000',
-      fontFamily: 'Poppins-Regular',
     },
     click: {
       color: 'gray',
-      fontFamily: 'Poppins-Regular',
       fontSize: 12
-    },
-    // clickExpanded: {
-    //   color: '#000',
-    //   fontFamily: 'Poppins-Regular',
-    //   fontSize: 12
-    // }
+    }
 });
 
 export default Events;

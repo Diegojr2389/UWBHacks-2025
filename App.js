@@ -67,15 +67,6 @@ export default function App() {
     console.log('Place details:', details);
   };
 
-  // let [fontsLoaded] = useFonts({
-  //   'Poppins-Regular': require('./assets/fonts/Poppins-Regular.ttf'),
-  //   'Poppins-SemiBold': require('./assets/fonts/Poppins-SemiBold.ttf'),
-  // });
-  
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
-
   const [data, setData] = useState([
     {id: '1', title: 'Frequent Robberies', location: "Capitol Hill, Seattle", description: "This area has a reputation for frequent robberies, with many incidents reported in recent months, making it one of the more dangerous parts of the city."},
     {id: '2', title: 'Child Abduction', location: "Ballard, Seattle", description: "A child was reported missing after being abducted in this area 4 days ago."},
@@ -216,13 +207,11 @@ const styles = StyleSheet.create({
   mapText: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'Poppins-Regular',
     marginRight: 8
   }, 
   addEventText: {
     color: 'white',
     fontSize: 14,
-    fontFamily: 'Poppins-Regular',
     alignItems: 'center'
   },
   flatlist: {
@@ -244,7 +233,6 @@ const styles = StyleSheet.create({
   },
   closeBtnTxt: {
     color: 'white',
-    fontFamily: 'Poppins-Regular'
   },
   overlay: {
     flex: 1,
