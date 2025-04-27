@@ -3,51 +3,51 @@ import { TextInput } from 'react-native';
 
 const AddEvent = ({addEventVisible, setAddEventVisible, eventTitle, setEventTitle, eventLocation, setEventLocation, eventDescription, setEventDescription, onSaveEvent}) => {
     return (
-      <Modal 
+        <Modal 
         visible={addEventVisible}
         animationType='slide'
         onRequestClose={() => setAddEventVisible(false)}
-      >
-        <SafeAreaView style={styles.overlay}>
-        <TouchableOpacity style={styles.closeButton} onPress={() => setAddEventVisible(false)}>
-        <Text style={styles.closeBtnTxt}>CLOSE</Text>
-        </TouchableOpacity>
-          
-        <View style={styles.popup}>
-        <Text style={styles.modalTitle}>Add New Event</Text>
-        <Text style={styles.underline}/>
-
-        <TextInput
-            placeholder="Event Title"
-            placeholderTextColor="#56666F"
-            value={eventTitle}
-            onChangeText={setEventTitle}
-            style={styles.input}
-        />
+        >
+            <SafeAreaView style={styles.overlay}>
+                <TouchableOpacity style={styles.closeButton} onPress={() => setAddEventVisible(false)}>
+                <Text style={styles.closeBtnTxt}>CLOSE</Text>
+                </TouchableOpacity>
             
-        <TextInput
-            placeholder="Event Location"
-            placeholderTextColor="#56666F"
-            value={eventLocation}
-            onChangeText={setEventLocation}
-            style={styles.input}
-        />
-            
-        <TextInput
-            placeholder="Event Description"
-            placeholderTextColor="#56666F"
-            value={eventDescription}
-            onChangeText={setEventDescription}
-            style={[styles.input, { height: 80 }]}
-            multiline
-        />
+                <View style={styles.popup}>
+                <Text style={styles.modalTitle}>Add New Event</Text>
+                <Text style={styles.underline}/>
 
-        <TouchableOpacity style={styles.saveButton} onPress={onSaveEvent}>
-            <Text style={styles.saveButtonText}>Submit</Text>
-        </TouchableOpacity>
-        </View>
-    </SafeAreaView>
-    </Modal>
+                <TextInput
+                    placeholder="Event Title"
+                    placeholderTextColor="#56666F"
+                    value={eventTitle}
+                    onChangeText={setEventTitle}
+                    style={styles.input}
+                />
+                    
+                <TextInput
+                    placeholder="Event Location"
+                    placeholderTextColor="#56666F"
+                    value={eventLocation}
+                    onChangeText={setEventLocation}
+                    style={styles.input}
+                />
+                    
+                <TextInput
+                    placeholder="Event Description"
+                    placeholderTextColor="#56666F"
+                    value={eventDescription}
+                    onChangeText={setEventDescription}
+                    style={[styles.input, { height: 80 }]}
+                    multiline
+                />
+
+                <TouchableOpacity style={styles.saveButton} onPress={onSaveEvent}>
+                    <Text style={styles.saveButtonText}>Submit</Text>
+                </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </Modal>
     )
 }
 
