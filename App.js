@@ -6,6 +6,7 @@ import Events from './components/Events';
 import MapView, { Marker, Polyline, Polygon, PROVIDER_GOOGLE } from 'react-native-maps'
 import { useFonts } from 'expo-font';
 import Map from './components/Map'; 
+import AddEvent from './components/AddEvent';
 
 export default function App() {
   const [location, setLocation] = useState(null);
@@ -105,6 +106,10 @@ export default function App() {
         </TouchableOpacity>
 
         <Map mapVisible={mapVisible} location={location} setMapVisible={setMapVisible}/>
+        {/*<AddEvent addEventVisible={addEventVisible} setAddEventVisible={setAddEventVisible} 
+          eventTitle={setEventTitle} eventLocation={setEventLocation}
+          eventDescription={setEventDescription}
+          onSaveEvent={handleSaveEvent}/>*/}
 
         <TouchableOpacity style={styles.addButton} onPress={() => setAddEventVisible(true)}>
           <Text style={styles.addEventText}>Add Event</Text>
