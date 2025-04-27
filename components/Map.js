@@ -10,6 +10,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
     const [startLng, setStartLng] = useState('');
     const [destLat, setDestLat] = useState('');
     const [destLng, setDestLng] = useState('');
+    const [travelMode, setTravelMode] = useState('driving');
     
     // Set current location as default start point when available
     useEffect(() => {
@@ -21,12 +22,15 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
     }, [location]);
 
     const heatmapPoints = [
-        { latitude: 47.7606, longitude: -122.1917, weight: 5 }, // Main UW Bothell
-        { latitude: 47.7610, longitude: -122.1905, weight: 5 },
-        { latitude: 47.7615, longitude: -122.1920, weight: 4 },
-        { latitude: 47.7620, longitude: -122.1900, weight: 3 },
-        { latitude: 47.7590, longitude: -122.1905, weight: 2 },
-        { latitude: 47.7585, longitude: -122.1910, weight: 1 },
+        { latitude: 47.7615, longitude: -122.2050, weight: 1 },
+        { latitude: 47.7580, longitude: -122.2105, weight: 0.8 },
+        { latitude: 47.7650, longitude: -122.1950, weight: 0.7 },
+        { latitude: 47.7700, longitude: -122.2000, weight: 0.6 },
+        { latitude: 47.7550, longitude: -122.2150, weight: 0.5 },
+        { latitude: 47.7680, longitude: -122.2080, weight: 0.9 },
+        { latitude: 47.7625, longitude: -122.2025, weight: 0.4 },
+        { latitude: 47.7595, longitude: -122.2200, weight: 0.7 },
+        { latitude: 47.7710, longitude: -122.1970, weight: 0.6 },
     ];
 
     const parseCoordinates = () => {
@@ -61,9 +65,10 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         if (!parseCoordinates()) return;
         
         try {
+            // Using Google Directions API to get route
             const apiKey = 'AIzaSyC96OfrkwvwohzN0NcBqk6p6-dUSUxohDE';
             const response = await fetch(
-                `https://maps.googleapis.com/maps/api/directions/json?origin=${startCoords.latitude},${startCoords.longitude}&destination=${destCoords.latitude},${destCoords.longitude}&key=${apiKey}`
+                `https://maps.googleapis.com/maps/api/directions/json?origin=${startCoords.latitude},${startCoords.longitude}&destination=${destCoords.latitude},${destCoords.longitude}&mode=${travelMode}&key=${apiKey}`
             );
             
             const result = await response.json();
@@ -73,7 +78,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                 return;
             }
             
-            // Decode polyline
+            // Decode the polyline
             const points = result.routes[0].overview_polyline.points;
             const decodedCoords = decodePolyline(points);
             
@@ -84,7 +89,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         }
     };
 
-    // Decoding Google's polyline format
+    // Function to decode Google's polyline format
     const decodePolyline = (encoded) => {
         const poly = [];
         let index = 0, len = encoded.length;
@@ -132,8 +137,10 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         setDestLng('');
     };
 
+    // Calculate the region to show both markers and route
     const getMapRegion = () => {
         if (!startCoords) return null;
+        
         if (!destCoords) {
             return {
                 latitude: startCoords.latitude,
@@ -146,6 +153,7 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
         // Calculate center point and deltas to include both points
         const midLat = (startCoords.latitude + destCoords.latitude) / 2;
         const midLng = (startCoords.longitude + destCoords.longitude) / 2;
+        
         const latDelta = Math.abs(startCoords.latitude - destCoords.latitude) * 1.5;
         const lngDelta = Math.abs(startCoords.longitude - destCoords.longitude) * 1.5;
         
@@ -156,6 +164,53 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
             longitudeDelta: Math.max(0.01, lngDelta)
         };
     };
+
+    // Travel mode option buttons
+    const TravelModeSelector = () => (
+        <View style={styles.travelModeContainer}>
+            <Text style={styles.inputLabel}>Travel Mode:</Text>
+            <View style={styles.travelModeButtons}>
+                <TouchableOpacity 
+                    style={[
+                        styles.modeButton, 
+                        travelMode === 'driving' && styles.modeButtonSelected
+                    ]}
+                    onPress={() => setTravelMode('driving')}
+                >
+                    <Text style={[
+                        styles.modeButtonText,
+                        travelMode === 'driving' && styles.modeButtonTextSelected
+                    ]}>Driving</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                    style={[
+                        styles.modeButton, 
+                        travelMode === 'walking' && styles.modeButtonSelected
+                    ]}
+                    onPress={() => setTravelMode('walking')}
+                >
+                    <Text style={[
+                        styles.modeButtonText,
+                        travelMode === 'walking' && styles.modeButtonTextSelected
+                    ]}>Walking</Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity 
+                    style={[
+                        styles.modeButton, 
+                        travelMode === 'bicycling' && styles.modeButtonSelected
+                    ]}
+                    onPress={() => setTravelMode('bicycling')}
+                >
+                    <Text style={[
+                        styles.modeButtonText,
+                        travelMode === 'bicycling' && styles.modeButtonTextSelected
+                    ]}>Cycling</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
 
     return (    
         <Modal 
@@ -208,6 +263,9 @@ const Map = ({ mapVisible, location, setMapVisible }) => {
                                 />
                             </View>
                         </View>
+                        
+                        {/* Travel Mode Selector */}
+                        <TravelModeSelector />
                         
                         <View style={styles.buttonContainer}>
                             <TouchableOpacity style={styles.routeButton} onPress={getDirections}>
@@ -350,6 +408,34 @@ const styles = StyleSheet.create({
     },
     map: {
         flex: 1,
+    },
+    travelModeContainer: {
+        marginBottom: 10,
+    },
+    travelModeButtons: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    modeButton: {
+        flex: 1,
+        padding: 8,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        marginHorizontal: 2,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+    },
+    modeButtonSelected: {
+        backgroundColor: '#314048',
+        borderColor: '#56666F',
+    },
+    modeButtonText: {
+        color: '#333',
+    },
+    modeButtonTextSelected: {
+        color: '#fff',
+        fontWeight: 'bold',
     }
 });
 
