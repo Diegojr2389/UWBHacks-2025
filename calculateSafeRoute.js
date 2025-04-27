@@ -41,13 +41,23 @@ export default function App() {
     const [duration, setDuration] = useState('');
     const originRef = useRef();
     const destinationRef = useRef();
+
     if (!isLoaded) {
       return <LOL />
     }
-    function calculateRoute() {
+
+    async function calculateRoute() {
       if (originRef.current.value === '' || destinationRef.current.value === '') {
           return
       }
+      const directionsService = new google.maps.directionsService()
+      const results = await directionsService.route({
+        origin: originRef,current,value,
+        destination: destinationRef.current.value,
+        travelMode: google.maps.TravelMode.WALKING,
+        provideRouteAlternatives: true
+      });
+
     }
 
     //async function sendLocation(lat, lon)
